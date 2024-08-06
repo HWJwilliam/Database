@@ -1,0 +1,16 @@
+/Users/aadmin/Desktop/Database/pgsample/src/main/java/cs/toronto/edu/Main.java
+/Users/aadmin/Desktop/Database/pgsample/src/main/java/cs/toronto/edu/controller/AccountController.java
+/Users/aadmin/Desktop/Database/pgsample/src/main/java/cs/toronto/edu/controller/PortfolioController.java
+/Users/aadmin/Desktop/Database/pgsample/src/main/java/cs/toronto/edu/controller/ReviewController.java
+/Users/aadmin/Desktop/Database/pgsample/src/main/java/cs/toronto/edu/controller/StockController.java
+/Users/aadmin/Desktop/Database/pgsample/src/main/java/cs/toronto/edu/controller/StockHistoryController.java
+/Users/aadmin/Desktop/Database/pgsample/src/main/java/cs/toronto/edu/controller/StockListController.java
+/Users/aadmin/Desktop/Database/pgsample/src/main/java/cs/toronto/edu/models/Account.java
+/Users/aadmin/Desktop/Database/pgsample/src/main/java/cs/toronto/edu/models/Portfolio.java
+/Users/aadmin/Desktop/Database/pgsample/src/main/java/cs/toronto/edu/models/Review.java
+/Users/aadmin/Desktop/Database/pgsample/src/main/java/cs/toronto/edu/models/StockHistory.java
+/Users/aadmin/Desktop/Database/pgsample/src/main/java/cs/toronto/edu/models/StockInformation.java
+/Users/aadmin/Desktop/Database/pgsample/src/main/java/cs/toronto/edu/models/StockList.java
+/Users/aadmin/Desktop/Database/pgsample/src/main/java/cs/toronto/edu/models/Stocks.java
+/Users/aadmin/Desktop/Database/pgsample/src/main/java/cs/toronto/edu/models/appModel.java
+/Users/aadmin/Desktop/Database/pgsample/src/main/java/cs/toronto/edu/utils/Helper.java
