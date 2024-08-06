@@ -5,6 +5,7 @@ import cs.toronto.edu.utils.Helper;
 
 import javax.sound.sampled.Port;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Scanner;
 
 public class appModel {
@@ -68,6 +69,12 @@ public class appModel {
                 add_daily_info();
             } else if (status.equals("Cash Account")) {
                 cash_account();
+            } else if (status.equals("BetaCovGraph")) {
+                betacovgraph();
+            } else if (status.equals("Matrix")) {
+                matrix();
+            } else if (status.equals("Prediction")) {
+                predict();
             }
         }
     }
@@ -582,9 +589,11 @@ public class appModel {
      */
     public void look_at_portfolio(){
         PortfolioController.show_portfolio();
-        System.out.println("Type the ID of the portfolio for go into the stock");
+        System.out.println("Type the ID of the portfolio for go into the stock or 0 to go back");
         String input = scanner.nextLine().trim();
-        if (PortfolioController.check_contain_portfolio(input)) {
+        if (input.equals("0")) {
+            status = "Manage Portfolio";
+        } else if (PortfolioController.check_contain_portfolio(input)) {
             id_portfolio = input;
             id_stock = input;
             status = "Look at Portfolio";
@@ -605,13 +614,12 @@ public class appModel {
         while (true) {
             while (true) {
                 System.out.println("1. To Buy/Sell Stock; 2. Share/Modify stock list; 3. View stock list; " +
-                        "4. Covariance/Correlation matrix; 5. Beta Value; 6. COV; 7. Cash Account " +
-                        "8. Graph; 9. Daily stock info; 0. Go back");
+                        "4. Covariance/Correlation matrix; 5. Beta Value, COV, Graph; 6. Cash Account " +
+                        "7. Daily stock info; 8. Prediction 0. Go back");
 
                 input = scanner.nextLine().trim();
                 if (!input.equals("1") && !input.equals("2") && !input.equals("3") && !input.equals("4")
-                        && !input.equals("5") && !input.equals("6") && !input.equals("7") && !input.equals("8")
-                        && !input.equals("0")) {
+                        && !input.equals("5") && !input.equals("6") && !input.equals("7") && !input.equals("0")) {
                     System.out.println("Invalid Input");
                 } else {
                     break;
@@ -634,19 +642,16 @@ public class appModel {
                 status = "Matrix";
                 break;
             } else if (input.equals("5")) {
-                status = "Beta";
+                status = "BetaCovGraph";
                 break;
             } else if (input.equals("6")) {
-                status = "COV";
-                break;
-            } else if (input.equals("7")) {
                 status = "Cash Account";
                 break;
-            } else if (input.equals("8")) {
-                status = "Graph";
-                break;
-            } else if (input.equals("9")) {
+            } else if (input.equals("7")) {
                 status = "Daily stock info";
+                break;
+            } else if (input.equals("8")) {
+                status = "Prediction";
                 break;
             } else if (input.equals("0")) {
                 status = "Manage Portfolio";
@@ -655,30 +660,46 @@ public class appModel {
         }
     }
 
+    /**
+     * Called when user decided to buy and sell a stock
+     * __________________________
+     */
     public void buy_and_sell(){
         while (true) {
-            System.out.println("Type Buy/Sell, date in YYYY-MM-DD, the stock ID, share connect them in comma to " +
-                    "buy/sell a stock with a certain share. E.g. Buy,2018-02-01,3,AAL");
+            System.out.println("Type Buy/Sell, date in YYYY-MM-DD, the stock ID, share, connect them in comma to " +
+                    "buy/sell a stock with a certain share. E.g. Buy,2018-02-01,3,AAL. Type 0 to go back");
             String input = scanner.nextLine().trim();
-            PortfolioController.execute_transaction(input, id_portfolio);
+            if (input.equals("0")) {
+                status = "Look at Portfolio";
+                break;
+            } else {
+                PortfolioController.execute_transaction(input, id_portfolio);
+            }
         }
     }
 
+    /**
+     * Called when user decided to add a new daily info
+     * __________________________
+     */
     public void add_daily_info(){
         while (true) {
-            System.out.println("Type Buy/Sell and YYYY-MM-DD and Stock and Share, separate them by a comma to indicate" +
-                    "buy/sell a stock with some share. E.g. Buy,2015-04-19,AAL,4");
-
+            System.out.println("Type YYYY-MM-DD, Stock, Open, Close, High, Low, Volume, separate them by a comma to" +
+                    "add/update a stock information. E.g. 2012-08-11,AAL,3,5,6.5,2.2,20492. Or type 0 to go back");
+            String input = scanner.nextLine().trim();
+            if (input.equals("0")) {
+                status = "Look at Portfolio";
+                break;
+            } else {
+                StockHistoryController.add_stock_history(input);
+            }
         }
-        // Input: AAL 20, A 50, AB 90
-        // Input: Transaction Time
-        /*
-        1. compute cost and compare with cash; -> search history information to get close price
-        2. Insert into Buy(Portfolio_ID,Stock_symbol,Share, Transaction_time) Values (...)
-        3. Update Portfolio SET Cash = value WHERE ID = portfolio_id;
-         */
     }
 
+    /**
+     * Called when user decided to deposit/withdraw/transfer cash
+     * __________________________
+     */
     public void cash_account(){
         while (true) {
             PortfolioController.list_portfolio(id_portfolio);
@@ -695,16 +716,63 @@ public class appModel {
         }
     }
 
-    public void statistic_stock_in_portfolio(){
-
-        // Input: AAL 20, A 50, AB 90
-        // Input: Transaction Time
-        /*
-        1. find bought stocks in portfolio: Select * from Buy where Portfolio_ID = portfolio_id
-        2. find history information for stocks til Transaction_time
-        3. calculate cov for each stock -> cov matrix
-         */
+    /**
+     * Called when user decided to find the covariance of stock
+     * __________________________
+     */
+    public void betacovgraph(){
+        while (true) {
+            System.out.println("Type the name of the stock, the start date, the end date, both in YYYY-MM-DD, " +
+                    "separated in comma to find beta, cov and the graph of a stock in such interval. " +
+                    "E.g. A,2014-03-04,2018-01-01. Or type 0 to go back.");
+            String input = scanner.nextLine().trim();
+            if (input.equals("0")) {
+                status = "Look at Portfolio";
+                break;
+            } else {
+                StockController.betacovgraph(input);
+            }
+        }
     }
+
+    /**
+     * Called when user decided to get the matrix
+     * __________________________
+     */
+    public void matrix(){
+        while (true) {
+            System.out.println("Type the start date, the end date, both in YYYY-MM-DD, " +
+                    "separated in comma to find the covariance and correlation matrix of stocks in such interval. " +
+                    "E.g. 2014-03-04,2018-01-01. Or type 0 to go back.");
+            String input = scanner.nextLine().trim();
+            if (input.equals("0")) {
+                status = "Look at Portfolio";
+                break;
+            } else {
+                PortfolioController.matrix(input, id_portfolio);
+            }
+        }
+    }
+
+    /**
+     * Called when user decided to get the prediction
+     * __________________________
+     */
+    public void predict(){
+        while (true) {
+            System.out.println("Type the start date, the end date, both in YYYY-MM-DD, " +
+                    "separated in comma to find the covariance and correlation matrix of stocks in such interval. " +
+                    "E.g. 2014-03-04,2018-01-01. Or type 0 to go back.");
+            String input = scanner.nextLine().trim();
+            if (input.equals("0")) {
+                status = "Look at Portfolio";
+                break;
+            } else {
+                Hashtable<String, Float[][]> matrices = PortfolioController.matrix(input, id_portfolio);
+            }
+        }
+    }
+
 
 
 

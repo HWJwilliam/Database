@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Hashtable;
 
 public class PortfolioController {
 
@@ -110,7 +112,7 @@ public class PortfolioController {
             rs = stmt.executeQuery(sqlSelect);
             if (rs.next()) {
                 int amount = Integer.parseInt(info[2]);
-                int cost = amount * rs.getInt("Close");
+                float cost = amount * rs.getFloat("Close");
                 if (info[0].equals("Buy")) {
                     String sqlSelect1 = "SELECT Cash FROM Portfolio WHERE ID = '" + portfolio_id + "';";
                     rs = stmt.executeQuery(sqlSelect1);
@@ -160,7 +162,7 @@ public class PortfolioController {
                 }
             } else {
                 System.out.println("There is no cost for close for selected date and stock, " +
-                        "you need to update such information first and then try to do the transaction." +
+                        "you need to update such information first and then try to do the transaction.\n" +
                         "You need the Closed price of " + info[3] + " on " + info[1] + ".");
             }
         } catch (SQLException e) {
@@ -258,5 +260,95 @@ public class PortfolioController {
         } catch (Exception e) {
             System.out.println("Invalid input");
         }
+    }
+
+    /**
+     * A helper for calculating covariance and correlation matrices given the interval user inputted
+     * Computation is done on Close attribute
+     * Return a Hashtable with Timestamp corresponding to its Close value
+     * __________________________
+     */
+    public static Hashtable<String, Float[][]> matrix(String input, String portfolio_id) {
+        Statement stmt = Helper.getStmt();
+        ResultSet rs = null;
+        Hashtable<String, Float[][]> matrices = new Hashtable<String, Float[][]>();
+        String[] info = null;
+        try {
+            info = input.split(",");
+        } catch (Exception e) {
+            System.out.println("Invalid Input");
+            return null;
+        }
+
+        try {
+            String sqlSelect = "SELECT Stock_symbol FROM Bought WHERE Portfolio_ID = '" + portfolio_id + "';";
+            rs = stmt.executeQuery(sqlSelect);
+            ArrayList<String> stock = new ArrayList<String>();
+            while (rs.next()) {
+                stock.add(rs.getString("Stock_symbol"));
+            }
+            int n = stock.size();
+            Float[][] covariance = new Float[n][n];
+            Float[][] correlation = new Float[n][n];
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (i > j) {
+                        covariance[i][j] = covariance[j][i];
+                        correlation[i][j] = correlation[j][i];
+                    } else {
+                        sqlSelect = "WITH LIST_A AS (SELECT (Close - LAG(Close) OVER " +
+                                "(ORDER BY Timestamp))/NULLIF(LAG(Close) OVER (ORDER BY Timestamp), 0) " +
+                                "AS A, ROW_NUMBER() OVER () AS rn FROM (SELECT Close, Timestamp FROM Stock_hist_info " +
+                                "WHERE Symbol = 'A' AND Timestamp IN ((SELECT Timestamp FROM Stock_hist_info WHERE " +
+                                "Timestamp BETWEEN '" + info[0] + "' AND '" + info[1] + "' AND Symbol = '" + stock.get(i) + "' ) " +
+                                "INTERSECT (SELECT Timestamp FROM Stock_hist_info WHERE Timestamp BETWEEN '" + info[0]
+                                + "' AND '" + info[1] + "' AND Symbol = '" + stock.get(j) + "')))), LIST_B AS (SELECT " +
+                                "(Close - LAG(Close) OVER (ORDER BY Timestamp))/NULLIF(LAG(Close) OVER " +
+                                "(ORDER BY Timestamp), 0) AS B, ROW_NUMBER() OVER () AS rn FROM " +
+                                "(SELECT Close, Timestamp FROM Stock_hist_info WHERE Symbol = '" + stock.get(i) + "' AND " +
+                                "Timestamp IN ((SELECT Timestamp FROM Stock_hist_info WHERE Timestamp BETWEEN '" +
+                                info[0] + "' AND '" + info[1] + "' AND Symbol = '" + stock.get(i) + "' ) INTERSECT " +
+                                "(SELECT Timestamp FROM Stock_hist_info WHERE Timestamp BETWEEN '" + info[0] + "' " +
+                                "AND '" + info[1] + "' AND Symbol = '" + stock.get(j) + "')))) SELECT COVAR_SAMP(A, B) " +
+                                "AS covariance FROM (SELECT A,B FROM LIST_A JOIN LIST_B ON LIST_A.rn = LIST_B.rn);";
+                        rs = stmt.executeQuery(sqlSelect);
+                        if (rs.next()) {
+                            covariance[i][j] = rs.getFloat("covariance");
+                        } else {
+                            System.out.println("Invalid input");
+                            return null;
+                        }
+                        sqlSelect = "WITH LIST_A AS (SELECT (Close - LAG(Close) OVER " +
+                                "(ORDER BY Timestamp))/NULLIF(LAG(Close) OVER (ORDER BY Timestamp), 0) " +
+                                "AS A, ROW_NUMBER() OVER () AS rn FROM (SELECT Close, Timestamp FROM Stock_hist_info " +
+                                "WHERE Symbol = 'A' AND Timestamp IN ((SELECT Timestamp FROM Stock_hist_info WHERE " +
+                                "Timestamp BETWEEN '" + info[0] + "' AND '" + info[1] + "' AND Symbol = '" + stock.get(i) + "' ) " +
+                                "INTERSECT (SELECT Timestamp FROM Stock_hist_info WHERE Timestamp BETWEEN '" + info[0]
+                                + "' AND '" + info[1] + "' AND Symbol = '" + stock.get(j) + "')))), LIST_B AS (SELECT " +
+                                "(Close - LAG(Close) OVER (ORDER BY Timestamp))/NULLIF(LAG(Close) OVER " +
+                                "(ORDER BY Timestamp), 0) AS B, ROW_NUMBER() OVER () AS rn FROM " +
+                                "(SELECT Close, Timestamp FROM Stock_hist_info WHERE Symbol = '" + stock.get(i) + "' AND " +
+                                "Timestamp IN ((SELECT Timestamp FROM Stock_hist_info WHERE Timestamp BETWEEN '" +
+                                info[0] + "' AND '" + info[1] + "' AND Symbol = '" + stock.get(i) + "' ) INTERSECT " +
+                                "(SELECT Timestamp FROM Stock_hist_info WHERE Timestamp BETWEEN '" + info[0] + "' " +
+                                "AND '" + info[1] + "' AND Symbol = '" + stock.get(j) + "')))) SELECT CORR(A, B) " +
+                                "AS correlation FROM (SELECT A,B FROM LIST_A JOIN LIST_B ON LIST_A.rn = LIST_B.rn);";
+                        rs = stmt.executeQuery(sqlSelect);
+                        if (rs.next()) {
+                            correlation[i][j] = rs.getFloat("correlation");
+                        }
+                    }
+                }
+            }
+            matrices.put("Covariance matrix", covariance);
+            matrices.put("Correlation matrix", correlation);
+            return matrices;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Invalid Input");
+        }
+        return null;
+
     }
 }
