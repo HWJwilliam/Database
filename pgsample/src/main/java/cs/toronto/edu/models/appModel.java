@@ -7,6 +7,8 @@ import javax.sound.sampled.Port;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Scanner;
+import java.util.Date;
+import java.util.*;
 
 public class appModel {
 
@@ -63,6 +65,8 @@ public class appModel {
                 create_portfolio();
             } else if (status.equals("Look at Portfolio")) {
                 look_at_portfolio();
+            } else if (status.equals("Go to Portfolio")) {
+                go_to_portfolio();
             } else if (status.equals("Buy/Sell Stock")) {
                 buy_and_sell();
             } else if (status.equals("Daily stock info")) {
@@ -374,7 +378,7 @@ public class appModel {
                 if (bool) {
                     status = "Manage Stock Lists";
                 } else {
-                    status = "Look at portfolio";
+                    status = "Go to Portfolio";
                 }
                 break;
             } else if (input.equals("DELETE")) {
@@ -579,7 +583,7 @@ public class appModel {
         // own stock list
         id_portfolio = PortfolioController.create_portfolio();
         id_stock = id_portfolio;
-        status = "Look at Portfolio";
+        status = "Go to Portfolio";
         go_to_portfolio();
     }
 
@@ -596,7 +600,7 @@ public class appModel {
         } else if (PortfolioController.check_contain_portfolio(input)) {
             id_portfolio = input;
             id_stock = input;
-            status = "Look at Portfolio";
+            status = "Go to Portfolio";
             go_to_portfolio();
         } else {
             System.out.println("No such portfolio found");
@@ -615,11 +619,11 @@ public class appModel {
             while (true) {
                 System.out.println("1. To Buy/Sell Stock; 2. Share/Modify stock list; 3. View stock list; " +
                         "4. Covariance/Correlation matrix; 5. Beta Value, COV, Graph; 6. Cash Account " +
-                        "7. Daily stock info; 8. Prediction 0. Go back");
+                        "7. Daily stock info; 8. Prediction; 0. Go back");
 
                 input = scanner.nextLine().trim();
                 if (!input.equals("1") && !input.equals("2") && !input.equals("3") && !input.equals("4")
-                        && !input.equals("5") && !input.equals("6") && !input.equals("7") && !input.equals("0")) {
+                        && !input.equals("5") && !input.equals("6") && !input.equals("7") && !input.equals("8") && !input.equals("0")) {
                     System.out.println("Invalid Input");
                 } else {
                     break;
@@ -666,11 +670,12 @@ public class appModel {
      */
     public void buy_and_sell(){
         while (true) {
+            PortfolioController.show_stock(id_portfolio);
             System.out.println("Type Buy/Sell, date in YYYY-MM-DD, the stock ID, share, connect them in comma to " +
                     "buy/sell a stock with a certain share. E.g. Buy,2018-02-01,3,AAL. Type 0 to go back");
             String input = scanner.nextLine().trim();
             if (input.equals("0")) {
-                status = "Look at Portfolio";
+                status = "Go to Portfolio";
                 break;
             } else {
                 PortfolioController.execute_transaction(input, id_portfolio);
@@ -688,7 +693,7 @@ public class appModel {
                     "add/update a stock information. E.g. 2012-08-11,AAL,3,5,6.5,2.2,20492. Or type 0 to go back");
             String input = scanner.nextLine().trim();
             if (input.equals("0")) {
-                status = "Look at Portfolio";
+                status = "Go to Portfolio";
                 break;
             } else {
                 StockHistoryController.add_stock_history(input);
@@ -708,7 +713,7 @@ public class appModel {
                     "Transfer,3,Hello2024-08-05 15:37:48.573. Or type 0 to go back");
             String input = scanner.nextLine().trim();
             if (input.equals("0")) {
-                status = "Look at Portfolio";
+                status = "Go to Portfolio";
                 break;
             } else {
                 PortfolioController.deposit_withdraw_transfer(input, id_portfolio);
@@ -727,16 +732,16 @@ public class appModel {
                     "E.g. A,2014-03-04,2018-01-01. Or type 0 to go back.");
             String input = scanner.nextLine().trim();
             if (input.equals("0")) {
-                status = "Look at Portfolio";
+                status = "Go to Portfolio";
                 break;
             } else {
-                StockController.betacovgraph(input);
+                Hashtable<Date, Float> graph = StockController.betacovgraph(input);
             }
         }
     }
 
     /**
-     * Called when user decided to get the matrix
+     * Called when user decided to get the matrix. Correlation and covariance matrix are stored in Hashtable
      * __________________________
      */
     public void matrix(){
@@ -746,10 +751,10 @@ public class appModel {
                     "E.g. 2014-03-04,2018-01-01. Or type 0 to go back.");
             String input = scanner.nextLine().trim();
             if (input.equals("0")) {
-                status = "Look at Portfolio";
+                status = "Go to Portfolio";
                 break;
             } else {
-                PortfolioController.matrix(input, id_portfolio);
+                Hashtable<String, Float[][]> matrices = PortfolioController.matrix(input, id_portfolio);
             }
         }
     }
@@ -758,17 +763,17 @@ public class appModel {
      * Called when user decided to get the prediction
      * __________________________
      */
-    public void predict(){
+    public void predict() {
         while (true) {
-            System.out.println("Type the start date, the end date, both in YYYY-MM-DD, " +
-                    "separated in comma to find the covariance and correlation matrix of stocks in such interval. " +
-                    "E.g. 2014-03-04,2018-01-01. Or type 0 to go back.");
+            System.out.println("Type the name of the stock, and the date of the last prediction you want to make " +
+                    "from the last available stock history, separate them by comma, e.g. AAL,2020-08-02. " +
+                    "Or type 0 to go back.");
             String input = scanner.nextLine().trim();
             if (input.equals("0")) {
-                status = "Look at Portfolio";
+                status = "Go to Portfolio";
                 break;
             } else {
-                Hashtable<String, Float[][]> matrices = PortfolioController.matrix(input, id_portfolio);
+                Hashtable<Date, Float> graph = StockController.predict(input);
             }
         }
     }

@@ -18,7 +18,8 @@ public class PortfolioController {
      */
     public static String create_portfolio() {
         Statement stmt = Helper.getStmt();
-        String portfolio_id = Helper.getAccount().getUsername() + new Timestamp(System.currentTimeMillis());;
+        String portfolio_id = Helper.getAccount().getUsername() + new Timestamp(System.currentTimeMillis());
+        ;
         String username = Helper.getAccount().getUsername();
         String sqlInsert = "INSERT INTO Portfolio (ID, Cash) " + "VALUES ('" + portfolio_id + "', " + 0 + ");";
         String sqlInsert2 = "INSERT INTO Have_portfolio (Account_username, Portfolio_ID) " + "VALUES ('" + username + "', '" +
@@ -45,7 +46,7 @@ public class PortfolioController {
      * A helper for showing all the portfolio created by a user from the backend
      * __________________________
      */
-    public static void show_portfolio(){
+    public static void show_portfolio() {
         Statement stmt = Helper.getStmt();
         String sqlSelect = "SELECT Portfolio_ID FROM Have_portfolio WHERE Account_username = '" +
                 Helper.getAccount().getUsername() + "';";
@@ -117,11 +118,11 @@ public class PortfolioController {
                     String sqlSelect1 = "SELECT Cash FROM Portfolio WHERE ID = '" + portfolio_id + "';";
                     rs = stmt.executeQuery(sqlSelect1);
                     if (rs.next()) {
-                        int cash = rs.getInt("Cash");
+                        float cash = rs.getFloat("Cash");
                         if (cash >= cost) {
                             cash -= cost;
                             String sqlUpdate = "UPDATE Portfolio SET Cash = " + cash + " WHERE ID = '" +
-                                    portfolio_id + "');";
+                                    portfolio_id + "';";
                             stmt.executeUpdate(sqlUpdate);
                             String sqlSelect2 = "SELECT * FROM Bought WHERE Portfolio_ID = '" + portfolio_id +
                                     "' AND Stock_symbol = '" + info[3] + "';";
@@ -184,7 +185,7 @@ public class PortfolioController {
         try {
             rs = stmt.executeQuery(sqlSelect);
             if (rs.next()) {
-                System.out.println("You currently have the following amount of funds: " + rs.getInt("Cash"));
+                System.out.println("You currently have the following amount of funds: " + rs.getFloat("Cash"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -225,7 +226,7 @@ public class PortfolioController {
                 ResultSet rs = null;
                 String sqlSelect = "SELECT Cash FROM Portfolio WHERE ID = '" + portfolio_id + "';";
                 rs = stmt.executeQuery(sqlSelect);
-                if (rs.next() && rs.getInt("Cash") >= cost) {
+                if (rs.next() && rs.getFloat("Cash") >= cost) {
                     String sqlUpdate = "UPDATE Portfolio SET CASH = Cash - " + cost + " WHERE ID = '" +
                             portfolio_id + "';";
                     stmt.executeUpdate(sqlUpdate);
@@ -240,7 +241,7 @@ public class PortfolioController {
                     ResultSet rs = null;
                     String sqlSelect = "SELECT Cash FROM Portfolio WHERE ID = '" + portfolio_id + "';";
                     rs = stmt.executeQuery(sqlSelect);
-                    if (rs.next() && rs.getInt("Cash") >= cost) {
+                    if (rs.next() && rs.getFloat("Cash") >= cost) {
                         String sqlUpdate = "UPDATE Portfolio SET CASH = Cash - " + info[1] + " WHERE ID = '" +
                                 portfolio_id + "';";
                         stmt.executeUpdate(sqlUpdate);
@@ -275,6 +276,10 @@ public class PortfolioController {
         String[] info = null;
         try {
             info = input.split(",");
+            if (info.length != 2) {
+                System.out.println("Invalid Input");
+                return null;
+            }
         } catch (Exception e) {
             System.out.println("Invalid Input");
             return null;
@@ -349,6 +354,36 @@ public class PortfolioController {
             System.out.println("Invalid Input");
         }
         return null;
+    }
 
+    /**
+     * A helper for showing all the stock and cash value
+     * __________________________
+     */
+    public static void show_stock(String portfolio_id) {
+        Statement stmt = Helper.getStmt();
+        String sqlSelect = "SELECT Cash FROM Portfolio WHERE ID = '" + portfolio_id + "';";
+        String sqlSelect1 = "SELECT Stock_symbol, Share FROM Bought WHERE Portfolio_ID = '" + portfolio_id + "';";
+        ResultSet rs = null;
+        try {
+            rs = stmt.executeQuery(sqlSelect);
+            if (rs.next()) {
+                System.out.println("Your current balance is: " + rs.getFloat("Cash"));
+            }
+            rs = stmt.executeQuery(sqlSelect1);
+            String str = "";
+            int count = 1;
+            while (rs.next()) {
+                str = str + count + ". " + rs.getString("Stock_symbol") + " with a share of " +
+                        rs.getInt("Share") + "\n";
+            }
+            if (str.isEmpty()) {
+                System.out.println("Your portfolio currently does not have any bought stock");
+            } else {
+                System.out.println("Your portfolio currently has the following stock:\n" + str);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

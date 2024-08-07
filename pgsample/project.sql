@@ -12,7 +12,7 @@ CREATE TABLE Stock_list
 CREATE TABLE Portfolio
 (
     ID VARCHAR PRIMARY KEY,
-    Cash INT
+    Cash REAL
 );
 
 CREATE TABLE Have_stock

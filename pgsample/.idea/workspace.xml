@@ -5,30 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="54097668-7964-4f84-84fd-41efae3db8e9" name="Changes" comment="Upload pgsample">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/javafx_swt.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cs/toronto/edu/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cs/toronto/edu/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project.sql" beforeDir="false" afterPath="$PROJECT_DIR$/project.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/cs/toronto/edu/controller/PortfolioController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cs/toronto/edu/controller/PortfolioController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/cs/toronto/edu/controller/StockController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cs/toronto/edu/controller/StockController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cs/toronto/edu/controller/StockHistoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cs/toronto/edu/controller/StockHistoryController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/cs/toronto/edu/models/appModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cs/toronto/edu/models/appModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/cs/toronto/edu/Main.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/cs/toronto/edu/controller/AccountController.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/cs/toronto/edu/controller/PortfolioController.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/cs/toronto/edu/controller/ReviewController.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/cs/toronto/edu/controller/StockController.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/cs/toronto/edu/controller/StockHistoryController.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/cs/toronto/edu/controller/StockListController.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/cs/toronto/edu/models/Account.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/cs/toronto/edu/models/Portfolio.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/cs/toronto/edu/models/Review.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/cs/toronto/edu/models/StockHistory.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/cs/toronto/edu/models/StockInformation.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/cs/toronto/edu/models/StockList.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/cs/toronto/edu/models/Stocks.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/cs/toronto/edu/models/appModel.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/cs/toronto/edu/controller/PortfolioController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/cs/toronto/edu/controller/PortfolioController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/cs/toronto/edu/controller/StockController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/cs/toronto/edu/controller/StockController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/cs/toronto/edu/models/appModel.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/cs/toronto/edu/models/appModel.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,6 +21,9 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -108,7 +95,7 @@
       <workItem from="1722962686373" duration="5000" />
       <workItem from="1722962714603" duration="1111000" />
       <workItem from="1722963829695" duration="288000" />
-      <workItem from="1722964154799" duration="10260000" />
+      <workItem from="1722964154799" duration="20483000" />
     </task>
     <task id="LOCAL-00001" summary="Upload pgsample">
       <option name="closed" value="true" />
